@@ -1,9 +1,15 @@
 import 'package:chat_app/screens/login_screen.dart';
 import 'package:chat_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+
   runApp(const ChatApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 class ChatApp extends StatelessWidget {
@@ -12,7 +18,7 @@ class ChatApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       routes: {
         Routes.LoginScreen: (context) => LoginScreen(),
         Routes.SignUpScreen: (context) => SignupScreen(),
@@ -23,9 +29,6 @@ class ChatApp extends StatelessWidget {
 }
 
 class Routes {
-  static const String LoginScreen='LoginScreen';
-  static const String SignUpScreen='SignUpScreen';
+  static const String LoginScreen = 'LoginScreen';
+  static const String SignUpScreen = 'SignUpScreen';
 }
-
-
-
