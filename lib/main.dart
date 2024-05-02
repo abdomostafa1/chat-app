@@ -1,15 +1,19 @@
+import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/screens/login_screen.dart';
-import 'package:chat_app/screens/signup_screen.dart';
+import 'package:chat_app/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
 
-  runApp(const ChatApp());
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  runApp(const ChatApp());
+
 }
 
 class ChatApp extends StatelessWidget {
@@ -21,9 +25,10 @@ class ChatApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         Routes.LoginScreen: (context) => LoginScreen(),
-        Routes.SignUpScreen: (context) => SignupScreen(),
+        Routes.SignUpScreen: (context) => RegisterScreen(),
+        Routes.ChatScreen: (context) => ChatScreen()
       },
-      initialRoute: 'LoginScreen',
+      initialRoute: Routes.ChatScreen,
     );
   }
 }
@@ -31,4 +36,5 @@ class ChatApp extends StatelessWidget {
 class Routes {
   static const String LoginScreen = 'LoginScreen';
   static const String SignUpScreen = 'SignUpScreen';
+  static const String ChatScreen = 'ChatScreen';
 }
