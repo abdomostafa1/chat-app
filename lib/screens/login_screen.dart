@@ -78,7 +78,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         password: password,
                       );
                       showSnackBar(context, 'logged in successfully');
-                      Navigator.pushNamed(context,Routes.ChatScreen);
+                      Navigator.pushNamed(
+                        context,
+                        Routes.ChatScreen,
+                        arguments: email,
+                      );
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         showSnackBar(context, 'wrong email.');

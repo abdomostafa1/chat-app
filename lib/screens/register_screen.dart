@@ -18,14 +18,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String password = '';
 
-  bool isLoading=false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
       body: ModalProgressHUD(
-
         inAsyncCall: isLoading,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -68,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   onPressed: () async {
                     try {
                       setState(() {
-                        isLoading=true;
+                        isLoading = true;
                       });
                       final credential = await FirebaseAuth.instance
                           .createUserWithEmailAndPassword(
@@ -76,7 +75,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         password: password,
                       );
                       showSnackBar(context, 'account created successfully');
-                      Navigator.pushNamed(context, Routes.ChatScreen);
+                      Navigator.pushNamed(
+                        context,
+                        Routes.ChatScreen,
+                        arguments: email,
+                      );
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'weak-password') {
                         showSnackBar(
@@ -84,13 +87,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       } else if (e.code == 'email-already-in-use') {
                         showSnackBar(context,
                             'The account already exists for that email.');
-
                       }
                     } catch (e) {
                       showSnackBar(context, e.toString());
                     }
                     setState(() {
-                      isLoading=false;
+                      isLoading = false;
                     });
                   },
                   style: ElevatedButton.styleFrom(
