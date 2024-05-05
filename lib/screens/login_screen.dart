@@ -60,6 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 8),
               CustomTextField(
                   hint: 'Password',
+                  obscureText: true,
                   onChange: (value) {
                     password = value;
                   }),

@@ -12,6 +12,7 @@ class ChatScreen extends StatelessWidget {
 
   final controller = TextEditingController();
   final scrollController = ScrollController();
+  var enterMessageTextFieldValue = '';
 
   @override
   Widget build(BuildContext context) {
@@ -29,48 +30,67 @@ class ChatScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: StreamBuilder<QuerySnapshot>(
-            stream: messages.orderBy(kDate).snapshots(),
-            builder: (context, snapshot) {
-              List<MessageModel> messageList = [];
-              if (snapshot.hasData) {
-                for (final doc in snapshot.data!.docs) {
-                  messageList.add(MessageModel.fromJson(doc));
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: StreamBuilder<QuerySnapshot>(
+              stream: messages.orderBy(kDate,descending: true).snapshots(),
+              builder: (context, snapshot) {
+                List<MessageModel> messageList = [];
+                if (snapshot.hasData) {
+                  for (final doc in snapshot.data!.docs) {
+                    messageList.add(MessageModel.fromJson(doc));
+                  }
                 }
-              }
-              return Column(children: [
-                Expanded(
-                  child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: messageList.length,
-                      itemBuilder: (context, index) {
-                        return MessageBox(message: messageList[index]);
-                      }),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: controller,
-                    onSubmitted: (value) async {
-                      controller.clear();
-                      messages.add({
-                        kMessage: value,
-                        kDate: DateTime.now(),
-                        'id': email
-                      });
-                      scrollController.animateTo(
-                          scrollController.position.maxScrollExtent,
-                          duration: Duration(seconds: 1),
-                          curve: Curves.easeIn);
-                    },
-                    decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.send),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
+                return Column(children: [
+                  Expanded(
+                    child: ListView.builder(
+                        reverse: true,
+                        controller: scrollController,
+                        itemCount: messageList.length,
+                        itemBuilder: (context, index) {
+                          if (messageList[index].id == email) {
+                            return MessageBox(message: messageList[index]);
+                          } else {
+                            return MessageBoxForFriend(
+                                message: messageList[index]);
+                          }
+                        }),
                   ),
-                )
-              ]);
-            }));
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: TextField(
+                      controller: controller,
+                      onChanged: (value) async {
+                        enterMessageTextFieldValue = value;
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Enter a message',
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.send),
+                          onPressed: () {
+                            if (enterMessageTextFieldValue.isEmpty) {
+                              return;
+                            }
+
+                            controller.clear();
+                            messages.add({
+                              kMessage: enterMessageTextFieldValue,
+                              kDate: DateTime.now(),
+                              'id': email
+                            });
+                            scrollController.animateTo(
+                                0,
+                                duration: Duration(seconds: 1),
+                                curve: Curves.easeIn);
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                      ),
+                    ),
+                  )
+                ]);
+              }),
+        ));
   }
 }

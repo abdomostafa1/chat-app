@@ -33,7 +33,7 @@ class ChatApp extends StatelessWidget {
         Routes.SignUpScreen: (context) => RegisterScreen(),
         Routes.ChatScreen: (context) => ChatScreen()
       },
-      initialRoute: Routes.ChatScreen,
+      initialRoute: initialRoute,
     );
   }
 }
