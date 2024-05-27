@@ -73,11 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       setState(() {
                         isLoading = true;
                       });
-                      final credential = await FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
+
                       showSnackBar(context, 'logged in successfully');
                       Navigator.pushNamed(
                         context,
