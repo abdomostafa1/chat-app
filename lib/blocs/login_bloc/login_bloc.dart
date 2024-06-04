@@ -1,13 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+
+part 'login_event.dart';
 
 part 'login_state.dart';
 
-class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginInitial());
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  LoginBloc() : super(LoginInitial()) {
+    on<LoginEvent>((event, emit)  async {
+       await login(event.email, event.password, emit);
+    });
 
-  void login(String email, String password) async {
+  }
+
+  Future<void> login(String email, String password, Emitter<LoginState> emit) async {
     emit(LoginLoading());
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -25,6 +33,14 @@ class LoginCubit extends Cubit<LoginState> {
       }
     } catch (e) {
       emit(LoginFailure(e.toString()));
+    }
+  }
+
+  @override
+  void onTransition(Transition<LoginEvent, LoginState> transition) {
+    super.onTransition(transition);
+    if (kDebugMode) {
+      print(transition);
     }
   }
 }

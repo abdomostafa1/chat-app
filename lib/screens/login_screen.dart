@@ -1,4 +1,3 @@
-import 'package:chat_app/cubits/login_cubit/login_cubit.dart';
 import 'package:chat_app/helper/consts.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/screens/register_screen.dart';
@@ -10,13 +9,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import '../blocs/login_bloc/login_bloc.dart';
 import '../helper/show_snackbar.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginCubit(),
+      create: (context) => LoginBloc(),
       child: LoginScreenContent(),
     );
   }
@@ -33,7 +33,7 @@ class LoginScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return BlocConsumer<LoginCubit, LoginState>(
+    return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
           showSnackBar(context, 'logged in successfully');
@@ -91,8 +91,7 @@ class LoginScreenContent extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        BlocProvider.of<LoginCubit>(context).login(
-                            email, password);
+                       BlocProvider.of<LoginBloc>(context).add(LoginEvent(email: email, password: password));
                       },
                       child: Text('Sign In'),
                       style: ElevatedButton.styleFrom(
